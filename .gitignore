@@ -1,0 +1,11 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+db.sqlite3
+logs/
+.pytest_cache/
+.coverage
+.ipynb_checkpoints/
+sms_guard_colab.zip
+.claude/
