@@ -7,5 +7,5 @@ logs/
 .pytest_cache/
 .coverage
 .ipynb_checkpoints/
-sms_guard_colab.zip
+sms_guard.zip
 .claude/
