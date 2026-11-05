@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard — SMS Guard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Dashboard</h1>
+  <label class="period">Период:
+    <select class="form-select form-select-sm" id="period">
+      <option value="7">7 дней</option>
+      <option value="30" selected>30 дней</option>
+      <option value="90">90 дней</option>
+    </select>
+  </label>
+</div>
+
+<div id="stats-root" data-endpoint="{% url 'api_stats_summary' %}" hidden>
+  <div class="stat-grid">
+    <div class="panel stat stat-total"><span>Всего проверок</span><strong id="stat-total">0</strong></div>
+    <div class="panel stat stat-safe"><span>Безопасные</span><strong id="stat-safe">0</strong></div>
+    <div class="panel stat stat-warn"><span>Подозрительные</span><strong id="stat-suspicious">0</strong></div>
+    <div class="panel stat stat-danger"><span>Мошеннические</span><strong id="stat-fraudulent">0</strong></div>
+  </div>
+  <div class="chart-grid">
+    <section class="panel"><h2>Распределение категорий</h2><div class="chart-box"><canvas id="chart-categories" role="img" aria-label="Распределение проверок по категориям"></canvas></div></section>
+    <section class="panel"><h2 id="days-title">Проверки за 30 дней</h2><div class="chart-box"><canvas id="chart-days" role="img" aria-label="Число проверок по дням"></canvas></div></section>
+  </div>
+  <section class="panel table-panel" id="recent-panel">
+    <h2>Последние проверки</h2>
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead><tr><th>Дата</th><th>Тип</th><th>Фрагмент</th><th>Результат</th></tr></thead>
+        <tbody id="recent-body"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+<div class="panel empty" id="stats-empty" hidden>
+  <p>Пока нет проверок за этот период.</p>
+  <a class="btn btn-primary" href="{% url 'check_sms' %}">Проверить сообщение</a>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'vendor/chart.umd.js' %}"></script>
+<script src="{% static 'js/result.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Проверка SMS — SMS Guard{% endblock %}
+{% block content %}
+<h1>Проверка SMS</h1>
+{% if not model_ready %}
+<div class="alert alert-warning" role="alert">Анализ временно недоступен: файл модели не загружен.</div>
+{% endif %}
+<form id="check-form" data-kind="sms" data-endpoint="{% url 'api_check_sms' %}" novalidate>
+  {% csrf_token %}
+  <label class="visually-hidden" for="check-input">Текст SMS</label>
+  <div class="textarea-wrap">
+    <textarea class="form-control" id="check-input" rows="4" maxlength="1000" placeholder="Вставьте текст сообщения"></textarea>
+    <span class="counter" id="char-counter">0 / 1000</span>
+  </div>
+  <div class="field-error mt-1" id="check-error" role="alert"></div>
+  <div class="button-row">
+    <button class="btn btn-primary" id="check-submit" type="submit">Проверить сообщение</button>
+    <button class="btn btn-outline-secondary" id="check-clear" type="button">Очистить</button>
+    <span class="examples">
+      <span class="muted">Примеры:</span>
+      <button class="btn btn-link btn-sm" type="button" data-example="Your order #4821 has been shipped and will arrive on Monday.">безопасное</button>
+      <button class="btn btn-link btn-sm" type="button" data-example="Ваша посылка ожидает оплаты таможенного сбора 350 ₸: http://post-delivery-pay.example">подозрительное</button>
+      <button class="btn btn-link btn-sm" type="button" data-example="Ваша карта заблокирована! Срочно подтвердите данные по ссылке: http://secure-bank-verify.example/login">мошенническое</button>
+    </span>
+  </div>
+</form>
+<div id="result" aria-live="polite"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/result.js' %}"></script>
+<script src="{% static 'js/check.js' %}"></script>
+{% endblock %}

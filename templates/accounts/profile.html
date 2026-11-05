@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Профиль — SMS Guard{% endblock %}
+{% block content %}
+<h1>Профиль</h1>
+<section class="panel mb-3">
+  <h2>Данные</h2>
+  <p class="mb-1">Логин: <strong>{{ user.username }}</strong></p>
+  <p class="mb-0">E-mail: {{ user.email }}</p>
+</section>
+<section class="panel mb-3">
+  <h2>Хранение текстов SMS</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="consent">
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" id="store_sms_text" name="store_sms_text" {% if profile.store_sms_text %}checked{% endif %}>
+      <label class="form-check-label" for="store_sms_text">Хранить полный текст моих SMS в истории</label>
+    </div>
+    <p class="muted">Без согласия сохраняется только маскированная версия: номера телефонов, карт и суммы заменяются на ***.</p>
+    <button class="btn btn-outline-secondary" type="submit">Сохранить</button>
+  </form>
+</section>
+<section class="panel">
+  <h2>История</h2>
+  <form method="post" onsubmit="return confirm('Удалить всю историю проверок? Это нельзя отменить.');">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete_history">
+    <button class="btn btn-outline-danger" type="submit">Удалить всю мою историю</button>
+  </form>
+</section>
+{% endblock %}

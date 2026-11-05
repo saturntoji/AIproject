@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Проверка URL — SMS Guard{% endblock %}
+{% block content %}
+<h1>Проверка URL</h1>
+<form id="check-form" data-kind="url" data-endpoint="{% url 'api_check_url' %}" novalidate>
+  {% csrf_token %}
+  <label class="visually-hidden" for="check-input">Ссылка</label>
+  <div class="url-row">
+    <input class="form-control" id="check-input" maxlength="2048" placeholder="https://example.com/page" autocomplete="off">
+    <button class="btn btn-primary" id="check-submit" type="submit">Проверить ссылку</button>
+  </div>
+  <div class="field-error mt-1" id="check-error" role="alert"></div>
+  <p class="muted mt-1">Ссылка не открывается: анализируется только её структура.</p>
+</form>
+<div id="result" aria-live="polite"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/result.js' %}"></script>
+<script src="{% static 'js/check.js' %}"></script>
+{% endblock %}
