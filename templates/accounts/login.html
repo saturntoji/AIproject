@@ -2,18 +2,16 @@
 {% block title %}Вход — SMS Guard{% endblock %}
 {% block body %}
 <div class="auth-page">
-  <form method="post" class="panel auth-card" novalidate>
-    {% csrf_token %}
+  <div class="panel auth-card">
     <h1>SMS Guard</h1>
     <p class="muted text-center">Защита от SMS-мошенничества</p>
-    {% if error %}<div class="field-error mb-2" role="alert">{{ error }}</div>{% endif %}
-    <input type="hidden" name="next" value="{{ next }}">
     <label class="form-label" for="username">Логин</label>
-    <input class="form-control mb-3" id="username" name="username" value="{{ username }}" autocomplete="username" required>
+    <input class="form-control mb-3" id="username" value="demo_user" autocomplete="off">
     <label class="form-label" for="password">Пароль</label>
-    <input class="form-control mb-3" id="password" name="password" type="password" autocomplete="current-password" required>
-    <button class="btn btn-primary w-100" type="submit">Войти</button>
-    <p class="muted text-center mt-3 mb-0">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
-  </form>
+    <input class="form-control mb-3" id="password" type="password" value="password" autocomplete="off">
+    <a class="btn btn-primary w-100" href="{% url 'dashboard' %}">Войти</a>
+    <p class="muted text-center mt-3 mb-0">Нет аккаунта? Зарегистрироваться</p>
+    <p class="muted text-center mt-2 mb-0">Макет: вход пока не работает.</p>
+  </div>
 </div>
 {% endblock %}

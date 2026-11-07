@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "rest_framework",
     "apps.accounts",
     "apps.analysis",
     "apps.dashboard",
@@ -64,7 +63,6 @@ DATABASES = {
     }
 }
 
-AUTH_PASSWORD_VALIDATORS = []  # Правила пароля из ФТ-1.1 проверяются в RegisterForm.
 LANGUAGE_CODE = "ru"
 TIME_ZONE = "Asia/Almaty"
 USE_I18N = True
@@ -73,23 +71,6 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/login/"
-
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_SECURE = not DEBUG and os.environ.get("DJANGO_HTTPS", "False").lower() == "true"
-CSRF_COOKIE_SECURE = SESSION_COOKIE_SECURE
-
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
-    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
-    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
-    "DEFAULT_THROTTLE_RATES": {"checks": "30/min"},
-    "EXCEPTION_HANDLER": "apps.analysis.api.exception_handler",
-}
 
 LOG_DIR = BASE_DIR / "logs"
 LOG_DIR.mkdir(exist_ok=True)

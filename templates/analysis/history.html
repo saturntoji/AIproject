@@ -1,68 +1,32 @@
 {% extends "base.html" %}
-{% load result_tags %}
 {% block title %}История — SMS Guard{% endblock %}
 {% block content %}
 <h1>История проверок</h1>
-<form method="get" class="filters">
-  <label>С <input class="form-control" type="date" name="date_from" value="{{ filters.date_from }}"></label>
-  <label>По <input class="form-control" type="date" name="date_to" value="{{ filters.date_to }}"></label>
-  <label>Тип
-    <select class="form-select" name="type">
-      <option value="">все</option>
-      <option value="SMS" {% if filters.type == 'SMS' %}selected{% endif %}>SMS</option>
-      <option value="URL" {% if filters.type == 'URL' %}selected{% endif %}>URL</option>
-    </select>
-  </label>
-  <label>Категория
-    <select class="form-select" name="category">
-      <option value="">все</option>
-      <option value="SAFE" {% if filters.category == 'SAFE' %}selected{% endif %}>Безопасные</option>
-      <option value="SUSPICIOUS" {% if filters.category == 'SUSPICIOUS' %}selected{% endif %}>Подозрительные</option>
-      <option value="FRAUDULENT" {% if filters.category == 'FRAUDULENT' %}selected{% endif %}>Мошеннические / опасные</option>
-    </select>
-  </label>
-  <label>Риск
-    <select class="form-select" name="risk_level">
-      <option value="">все</option>
-      <option value="LOW" {% if filters.risk_level == 'LOW' %}selected{% endif %}>Низкий</option>
-      <option value="MEDIUM" {% if filters.risk_level == 'MEDIUM' %}selected{% endif %}>Средний</option>
-      <option value="HIGH" {% if filters.risk_level == 'HIGH' %}selected{% endif %}>Высокий</option>
-    </select>
-  </label>
-  <button class="btn btn-primary" type="submit">Применить</button>
-</form>
-
+<div class="filters">
+  <label>С <input class="form-control" value="01.10.2026"></label>
+  <label>По <input class="form-control" value="31.10.2026"></label>
+  <label>Тип <select class="form-select"><option>все</option><option>SMS</option><option>URL</option></select></label>
+  <label>Категория <select class="form-select"><option>все</option><option>Безопасные</option><option>Подозрительные</option><option>Мошеннические</option></select></label>
+  <button class="btn btn-primary" type="button">Применить</button>
+</div>
 <section class="panel table-panel">
-  {% if page.object_list %}
   <div class="table-responsive">
     <table class="table align-middle mb-0">
       <thead><tr><th>Дата</th><th>Тип</th><th>Фрагмент</th><th class="text-end">Риск</th><th>Результат</th></tr></thead>
       <tbody>
-        {% for check in page %}
-        <tr>
-          <td class="text-nowrap">{{ check.created_at|date:"d.m H:i" }}</td>
-          <td>{{ check.check_type }}</td>
-          <td><a class="row-link" href="{% url 'result' check.id %}">{{ check|fragment }}</a></td>
-          <td class="text-end">{{ check.risk_score }}</td>
-          <td>{% category_badge check %}</td>
-        </tr>
-        {% endfor %}
+        <tr><td class="text-nowrap">31.10 08:15</td><td>SMS</td><td>Ваша карта заблокирована!…</td><td class="text-end">87</td><td><span class="badge-risk badge-danger">⚠ Мошенническое</span></td></tr>
+        <tr><td class="text-nowrap">31.10 08:02</td><td>URL</td><td>http://192.0.2.15/account-upd…</td><td class="text-end">91</td><td><span class="badge-risk badge-danger">⚠ Опасная</span></td></tr>
+        <tr><td class="text-nowrap">30.10 19:40</td><td>SMS</td><td>Привет! Встречаемся завтра…</td><td class="text-end">6</td><td><span class="badge-risk badge-safe">✓ Безопасное</span></td></tr>
+        <tr><td class="text-nowrap">30.10 12:05</td><td>SMS</td><td>Ваша посылка ожидает оплаты…</td><td class="text-end">58</td><td><span class="badge-risk badge-warn">! Подозрительное</span></td></tr>
+        <tr><td class="text-nowrap">29.10 17:22</td><td>URL</td><td>https://www.example.com/about</td><td class="text-end">4</td><td><span class="badge-risk badge-safe">✓ Безопасная</span></td></tr>
+        <tr><td class="text-nowrap">29.10 09:10</td><td>SMS</td><td>Мама, у меня проблемы, срочно…</td><td class="text-end">79</td><td><span class="badge-risk badge-danger">⚠ Мошенническое</span></td></tr>
+        <tr><td class="text-nowrap">28.10 21:47</td><td>SMS</td><td>Your order #4821 has been…</td><td class="text-end">3</td><td><span class="badge-risk badge-safe">✓ Безопасное</span></td></tr>
       </tbody>
     </table>
   </div>
   <div class="pager">
-    <span class="muted">Показано {{ page.start_index }}–{{ page.end_index }} из {{ page.paginator.count }}</span>
-    <span>
-      {% if page.has_previous %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.previous_page_number }}">‹ Назад</a>{% endif %}
-      <span class="mx-2">{{ page.number }} / {{ page.paginator.num_pages }}</span>
-      {% if page.has_next %}<a href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page.next_page_number }}">Вперёд ›</a>{% endif %}
-    </span>
+    <span class="muted">Показано 1–20 из 128</span>
+    <span class="muted">‹ 1 2 3 … 7 ›</span>
   </div>
-  {% else %}
-  <div class="empty">
-    <p>Записей не найдено.</p>
-    <a class="btn btn-primary" href="{% url 'check_sms' %}">Проверить сообщение</a>
-  </div>
-  {% endif %}
 </section>
 {% endblock %}
