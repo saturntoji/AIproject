@@ -9,3 +9,6 @@ logs/
 .ipynb_checkpoints/
 sms_guard.zip
 .claude/
+.idea/
+docs/*.docx
+docs/figures/screens/
