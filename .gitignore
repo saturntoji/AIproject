@@ -12,3 +12,5 @@ sms_guard.zip
 .idea/
 docs/*.docx
 docs/figures/screens/
+staticfiles/
+data/raw/url/*.csv
