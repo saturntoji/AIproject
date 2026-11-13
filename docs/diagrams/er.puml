@@ -1,0 +1,83 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity "auth_user" as users {
+  * id : integer <<PK>>
+  --
+  username : varchar(150)
+  email : varchar(254)
+  password : varchar(128) (хеш PBKDF2)
+  is_staff : bool
+  date_joined : datetime
+}
+
+entity "accounts_userprofile" as profile {
+  * id : integer <<PK>>
+  --
+  * user_id : integer <<FK>> UNIQUE
+  store_sms_text : bool = false
+  preferred_language : varchar(5)
+}
+
+entity "analysis_check" as checks {
+  * id : integer <<PK>>
+  --
+  * user_id : integer <<FK>>
+  check_type : SMS | URL
+  input_text : text NULL
+  input_masked : text
+  language : varchar(5)
+  category : SAFE | SUSPICIOUS | FRAUDULENT | DANGEROUS
+  risk_level : LOW | MEDIUM | HIGH
+  risk_score : smallint 0..100
+  p_sms : float NULL
+  explanation : json
+  recommendation : text
+  sms_model_version : varchar(30)
+  url_model_version : varchar(30)
+  created_at : datetime
+  ..
+  INDEX (user_id, created_at)
+  INDEX (category)
+}
+
+entity "analysis_urlresult" as urls {
+  * id : integer <<PK>>
+  --
+  * check_id : integer <<FK>> ON DELETE CASCADE
+  url : text
+  domain : varchar(255)
+  p_url : float
+  category : varchar(10)
+  features_json : json
+}
+
+entity "analysis_detectedfeature" as features {
+  * id : integer <<PK>>
+  --
+  * check_id : integer <<FK>> ON DELETE CASCADE
+  code : varchar(30)
+  title : varchar(100)
+  weight : float
+}
+
+entity "analysis_modelversion" as versions {
+  * id : integer <<PK>>
+  --
+  model_type : sms | url
+  version : varchar(30)
+  algorithm : varchar(100)
+  metrics_json : json
+  threshold : float
+  trained_at : date
+  is_active : bool
+  ..
+  UNIQUE (model_type, version)
+}
+
+users ||--|| profile
+users ||--o{ checks
+checks ||--o{ urls
+checks ||--o{ features
+@enduml

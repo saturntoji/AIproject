@@ -1,0 +1,35 @@
+@startuml
+title Проверка SMS: от нажатия кнопки до сохранения результата
+actor Пользователь
+participant "Браузер\n(check.js)" as Browser
+participant "API\n/api/v1/check/sms/" as Api
+participant "Сервис анализа\n(services.py)" as Service
+participant "ModelRegistry\n(predictor.py)" as Models
+participant "Модуль риска\n(risk.py)" as Risk
+database "База данных" as DB
+
+Пользователь -> Browser : вводит текст, нажимает «Проверить сообщение»
+Browser -> Browser : кнопка блокируется, показывается индикатор
+Browser -> Api : POST {text} + CSRF-токен
+Api -> Api : вход, лимит 30/мин, длина 1–1000
+Api -> DB : есть ли такая же проверка за 10 с?
+alt повторная отправка
+  DB --> Api : найдена
+  Api --> Browser : прежний результат
+else новая проверка
+  Api -> Service : analyze_sms(text)
+  Service -> Service : язык, словарь правил, поиск до 3 ссылок
+  Service -> Models : predict_sms(text)
+  Models --> Service : P_sms
+  loop для каждой ссылки
+    Service -> Models : predict_url(признаки домена)
+    Models --> Service : P_url
+  end
+  Service -> Risk : compute_risk(P_sms, P_url_max, группы, флаги)
+  Risk --> Service : Risk Score, уровень, причины, рекомендация
+  Service --> Api : AnalysisResult
+  Api -> DB : save_check (transaction.atomic, маскирование без согласия)
+  Api --> Browser : JSON результата
+end
+Browser -> Пользователь : карточка результата (textContent)
+@enduml
