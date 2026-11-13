@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "algorithm": "Gradient Boosting",
+  "params": {
+    "clf__learning_rate": "0.1",
+    "clf__max_leaf_nodes": "31"
+  },
+  "features": [
+    "url_length",
+    "host_length",
+    "dot_count",
+    "subdomain_count",
+    "hyphen_count",
+    "digit_count",
+    "host_digit_ratio",
+    "special_char_count",
+    "has_ip",
+    "nonstandard_port",
+    "is_shortener",
+    "suspicious_word_count",
+    "has_punycode",
+    "mixed_alphabets",
+    "brand_lookalike",
+    "host_entropy",
+    "suspicious_tld",
+    "free_hosting",
+    "vowel_ratio",
+    "max_consonant_run",
+    "host_token_count",
+    "longest_token",
+    "tld_length"
+  ],
+  "t1": 0.2871,
+  "t2": 0.3978,
+  "metrics_test": {
+    "Accuracy": 0.8345,
+    "Precision": 0.8071,
+    "Recall": 0.6611,
+    "F1": 0.7269,
+    "F2": 0.6859,
+    "ROC-AUC": 0.8342,
+    "PR-AUC": 0.8191
+  },
+  "dataset": "PhiUSIIL (UCI), домены, 100 000 записей",
+  "trained_at": "2026-11-13"
+}
