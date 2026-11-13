@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "algorithm": "Logistic Regression",
+  "params": {
+    "clf__C": "100"
+  },
+  "features": [
+    "word_tfidf_1_2",
+    "char_wb_tfidf_3_5",
+    "length",
+    "upper_ratio",
+    "exclamation_count",
+    "has_url",
+    "has_money",
+    "has_phone",
+    "rule_group_count"
+  ],
+  "threshold": 0.0782,
+  "metrics_test": {
+    "Accuracy": 0.9844,
+    "Precision": 0.9263,
+    "Recall": 0.9462,
+    "F1": 0.9362,
+    "F2": 0.9422,
+    "ROC-AUC": 0.9925,
+    "PR-AUC": 0.9811,
+    "Мс на 1 SMS": 0.2905
+  },
+  "trained_on": "train+val",
+  "train_size": 4364,
+  "trained_at": "2026-11-13"
+}

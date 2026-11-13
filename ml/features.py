@@ -10,7 +10,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.pipeline import FeatureUnion, Pipeline
 
-from ml.preprocessing import normalize_sms
+from ml.preprocessing import normalize_sms, remove_stopwords
 from ml.rules import find_rule_groups
 
 # <url>, <money> и другие токены, слова от 2 символов, а также ! и ? как отдельные токены.
@@ -61,9 +61,14 @@ class HandFeatures(BaseEstimator, TransformerMixin):
         return np.array(HAND_FEATURE_NAMES, dtype=object)
 
 
-def build_word_tfidf() -> TfidfVectorizer:
+def normalize_without_stopwords(text: str) -> str:
+    """Вариант предобработки для сравнения в задании 8."""
+    return remove_stopwords(normalize_sms(text))
+
+
+def build_word_tfidf(remove_stop: bool = False) -> TfidfVectorizer:
     return TfidfVectorizer(
-        preprocessor=normalize_sms,
+        preprocessor=normalize_without_stopwords if remove_stop else normalize_sms,
         token_pattern=WORD_TOKEN_PATTERN,
         ngram_range=(1, 2),
         min_df=2,
@@ -83,16 +88,16 @@ def build_char_tfidf() -> TfidfVectorizer:
     )
 
 
-def build_feature_union() -> FeatureUnion:
-    return FeatureUnion(
-        [
-            ("word", build_word_tfidf()),
-            ("char", build_char_tfidf()),
-            ("hand", HandFeatures()),
-        ]
-    )
+def build_feature_union(use_char: bool = True, remove_stop: bool = False, use_hand: bool = True) -> FeatureUnion:
+    """Набор признаков. Параметры нужны для сравнения вариантов в задании 8."""
+    parts = [("word", build_word_tfidf(remove_stop))]
+    if use_char:
+        parts.append(("char", build_char_tfidf()))
+    if use_hand:
+        parts.append(("hand", HandFeatures()))
+    return FeatureUnion(parts)
 
 
-def build_sms_pipeline(classifier) -> Pipeline:
+def build_sms_pipeline(classifier, **feature_options) -> Pipeline:
     """Pipeline «признаки + классификатор»: сохраняется в joblib целиком."""
-    return Pipeline([("features", build_feature_union()), ("clf", classifier)])
+    return Pipeline([("features", build_feature_union(**feature_options)), ("clf", classifier)])
