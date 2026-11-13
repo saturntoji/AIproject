@@ -1,0 +1,12 @@
+{
+  "weights": {
+    "sms": 0.6,
+    "url": 0.2,
+    "social_engineering": 0.3
+  },
+  "social_engineering_saturation": 2,
+  "levels": {
+    "medium_from": 25,
+    "high_from": 70
+  }
+}
