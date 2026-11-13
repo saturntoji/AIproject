@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — SMS Guard{% endblock %}
+{% block body %}
+<div class="auth-page">
+  <form method="post" class="panel auth-card" novalidate>
+    {% csrf_token %}
+    <h1>Регистрация</h1>
+    {% for field in form %}
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      <input class="form-control" id="{{ field.id_for_label }}" name="{{ field.html_name }}"
+             type="{{ field.field.widget.input_type }}"
+             value="{% if field.field.widget.input_type != 'password' %}{{ field.value|default:'' }}{% endif %}">
+      <div class="mb-3">{% for error in field.errors %}<div class="field-error" role="alert">{{ error }}</div>{% endfor %}</div>
+    {% endfor %}
+    <button class="btn btn-primary w-100" type="submit">Зарегистрироваться</button>
+    <p class="muted text-center mt-3 mb-0">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+  </form>
+</div>
+{% endblock %}

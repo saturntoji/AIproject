@@ -1,46 +1,33 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Проверка SMS — SMS Guard{% endblock %}
 {% block content %}
 <h1>Проверка SMS</h1>
-<label class="visually-hidden" for="sms-text">Текст SMS</label>
-<div class="textarea-wrap">
-  <textarea class="form-control" id="sms-text" rows="3">Ваша карта заблокирована! Срочно подтвердите данные по ссылке: http://secure-bank-verify.example/login</textarea>
-  <span class="counter">102 / 1000</span>
-</div>
-<div class="button-row">
-  <button class="btn btn-primary" type="button">Проверить сообщение</button>
-  <button class="btn btn-outline-secondary" type="button">Очистить</button>
-</div>
-
-<section class="result result-danger">
-  <div class="result-head">
-    <span class="result-title">⚠ Мошенническое сообщение</span>
-    <span>Риск: высокий</span>
+{% if not model_ready %}
+<div class="alert alert-warning" role="alert">Анализ временно недоступен: файл модели не загружен.</div>
+{% endif %}
+<form id="check-form" data-kind="sms" data-endpoint="{% url 'api_check_sms' %}" novalidate>
+  {% csrf_token %}
+  <label class="visually-hidden" for="check-input">Текст SMS</label>
+  <div class="textarea-wrap">
+    <textarea class="form-control" id="check-input" rows="4" maxlength="1000" placeholder="Вставьте текст сообщения"></textarea>
+    <span class="counter" id="char-counter">0 / 1000</span>
   </div>
-  <div class="result-body">
-    <div class="score-row">
-      <span>Risk Score</span>
-      <div class="score-track"><div class="score-fill" style="width: 87%"></div></div>
-      <span class="score-value">87 / 100</span>
-    </div>
-    <div class="prob-line">Вероятность мошенничества по тексту (SMS-модель): 0,94</div>
-    <div class="prob-line">Вероятность опасности ссылки (URL-модель): 0,81</div>
-    <div class="section-label">Найденная ссылка (не открывается, проверена отдельно)</div>
-    <div class="url-item">
-      <span class="url-text">http://<mark>secure-bank-verify.example</mark>/login</span>
-      <span class="badge-risk badge-danger">⚠ Опасная</span>
-    </div>
-    <div class="section-label">Обнаруженные признаки</div>
-    <ul class="reasons">
-      <li>Требование срочного действия («срочно»)</li>
-      <li>Упоминание блокировки банковской карты</li>
-      <li>Требование перейти по ссылке и «подтвердить данные»</li>
-      <li>В домене подозрительные слова: bank, verify, secure</li>
-    </ul>
-    <div class="recommendation">
-      <strong>Рекомендация: не переходите по ссылке и не вводите данные карты.</strong>
-      <span class="muted">Оценка носит вероятностный характер и не гарантирует безопасность.</span>
-    </div>
+  <div class="field-error mt-1" id="check-error" role="alert"></div>
+  <div class="button-row">
+    <button class="btn btn-primary" id="check-submit" type="submit">Проверить сообщение</button>
+    <button class="btn btn-outline-secondary" id="check-clear" type="button">Очистить</button>
+    <span class="examples">
+      <span class="muted">Примеры:</span>
+      <button class="btn btn-link btn-sm" type="button" data-example="Your order #4821 has been shipped and will arrive on Monday.">безопасное</button>
+      <button class="btn btn-link btn-sm" type="button" data-example="Ваша посылка ожидает оплаты таможенного сбора 350 ₸: http://post-delivery-pay.example">подозрительное</button>
+      <button class="btn btn-link btn-sm" type="button" data-example="Ваша карта заблокирована! Срочно подтвердите данные по ссылке: http://secure-bank-verify.example/login">мошенническое</button>
+    </span>
   </div>
-</section>
+</form>
+<div id="result" aria-live="polite"></div>
+{% endblock %}
+{% block scripts %}
+<script src="{% static 'js/result.js' %}?v=5"></script>
+<script src="{% static 'js/check.js' %}?v=5"></script>
 {% endblock %}

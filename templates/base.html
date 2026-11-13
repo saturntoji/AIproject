@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}SMS Guard{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'vendor/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}?v=6">
 </head>
 <body>
 {% block body %}
@@ -17,16 +17,20 @@
       <a href="{% url 'check_sms' %}" {% if active == 'sms' %}class="active" aria-current="page"{% endif %}>Проверка SMS</a>
       <a href="{% url 'check_url' %}" {% if active == 'url' %}class="active" aria-current="page"{% endif %}>Проверка URL</a>
       <a href="{% url 'history' %}" {% if active == 'history' %}class="active" aria-current="page"{% endif %}>История</a>
-      <span>Статистика</span>
-      <span>Профиль</span>
+      <a href="{% url 'stats' %}" {% if active == 'stats' %}class="active" aria-current="page"{% endif %}>Статистика</a>
+      <a href="{% url 'profile' %}" {% if active == 'profile' %}class="active" aria-current="page"{% endif %}>Профиль</a>
     </div>
-    <a class="logout" href="{% url 'login' %}">Выход</a>
+    <form method="post" action="{% url 'logout' %}" class="logout">
+      {% csrf_token %}
+      <button type="submit">Выход</button>
+    </form>
   </nav>
   <main class="content">
-    <div class="note">Макет интерфейса. Проверка пока не работает, все данные на экране условные.</div>
+    {% for message in messages %}<div class="alert alert-success py-2">{{ message }}</div>{% endfor %}
     {% block content %}{% endblock %}
   </main>
 </div>
 {% endblock %}
+{% block scripts %}{% endblock %}
 </body>
 </html>
